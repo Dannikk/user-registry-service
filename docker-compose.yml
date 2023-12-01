@@ -1,0 +1,57 @@
+services:
+  ur-service:
+    depends_on:
+      - rediska
+      - postgres
+    build: .
+    container_name: urserv
+    hostname: urserv-host
+    environment:
+      - ENV_VAR=true
+      - PGHOST=${PGHOST:-db}
+      - REDISHOST=${REDISHOST:-redisdb_host}
+    networks:
+      - urserv-network
+    ports:
+      - 8080:8080
+    deploy:
+      restart_policy:
+        condition: on-failure
+    
+  rediska:
+    image: redis:alpine3.18
+    container_name: redisdb
+    hostname: redisdb_host
+    ports:
+      - "6379:6379"
+    networks:
+      - urserv-network
+
+  postgres:
+    container_name: postgrya
+    image: postgres:alpine3.18
+    hostname: db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PW}
+      - POSTGRES_DB=${POSTGRES_DB} #optional (specify default database instead of $POSTGRES_DB)
+      - PGHOST=${PGHOST:-db}
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - urserv-network
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_MAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
+    ports:
+      - "5050:80"
+    restart: always
+
+networks:
+  urserv-network:
+    driver: bridge
