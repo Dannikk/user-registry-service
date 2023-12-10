@@ -7,14 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
-func (h *Handler) AddRoutes(eng *gin.Engine){
+func (h *Handler) AddRoutes(eng *gin.Engine) {
 	eng.GET("/ping", h.Ping)
 	eng.POST("/sign/hmacsha512", h.SignHMAC)
 	eng.POST("/postgres/users", h.CreateUser)
 	eng.POST("/redis/incr", h.IncrementRedis)
 }
-
 
 func (h Handler) Ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")

@@ -14,7 +14,7 @@ type UseCase interface {
 }
 
 type Handler struct {
-	uc	UseCase
+	uc UseCase
 }
 
 func NewHandler(uc UseCase) *Handler {

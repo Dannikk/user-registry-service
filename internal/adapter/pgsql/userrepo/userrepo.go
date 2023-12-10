@@ -8,14 +8,11 @@ import (
 	"user_registry/internal/service/user_reg"
 )
 
-
 type Repository struct {
 	pgsql *sql.DB
 }
 
-
 var _ user_reg.Repository = &Repository{}
-
 
 func New(pgsql_connect *sql.DB) *Repository {
 	return &Repository{

@@ -4,16 +4,15 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"net/http/httptest"
-	"testing"
-	"user_registry/internal/entity"
-	mocks "user_registry/internal/handler/http/api/mocks"
-	"user_registry/internal/handler/http/api"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	"go.uber.org/mock/gomock"
+	"net/http/httptest"
+	"testing"
+	"user_registry/internal/entity"
+	"user_registry/internal/handler/http/api"
+	mocks "user_registry/internal/handler/http/api/mocks"
 )
-
 
 func TestHandler_SignHMAC(t *testing.T) {
 	// Init Test Table
@@ -24,7 +23,7 @@ func TestHandler_SignHMAC(t *testing.T) {
 	tests := []struct {
 		name                 string
 		inputBody            string
-		inputTK            	entity.TextKey
+		inputTK              entity.TextKey
 		mockBehavior         mockBehavior
 		expectedStatusCode   int
 		expectedResponseBody string
@@ -34,7 +33,7 @@ func TestHandler_SignHMAC(t *testing.T) {
 			inputBody: `{"text": "username", "key": "TestName"}`,
 			inputTK: entity.TextKey{
 				Text: "username",
-				Key: "TestName",
+				Key:  "TestName",
 			},
 			mockBehavior: func(r *mocks.MockUseCase, tk entity.TextKey) {
 				r.EXPECT().Sign(context.Background(), &tk).Return("hexcode", nil)
@@ -43,10 +42,10 @@ func TestHandler_SignHMAC(t *testing.T) {
 			expectedResponseBody: `{"hex_code":"hexcode"}`,
 		},
 		{
-			name:      "Wrong Input",
-			inputBody: `{"username": "username"}`,
-			inputTK: entity.TextKey{},
-			mockBehavior: func(r *mocks.MockUseCase, tk entity.TextKey) {},
+			name:                 "Wrong Input",
+			inputBody:            `{"username": "username"}`,
+			inputTK:              entity.TextKey{},
+			mockBehavior:         func(r *mocks.MockUseCase, tk entity.TextKey) {},
 			expectedStatusCode:   400,
 			expectedResponseBody: `{"error":"Key: 'TextKey.Text' Error:Field validation for 'Text' failed on the 'required' tag\nKey: 'TextKey.Key' Error:Field validation for 'Key' failed on the 'required' tag"}`,
 		},
@@ -55,7 +54,7 @@ func TestHandler_SignHMAC(t *testing.T) {
 			inputBody: `{"text": "username", "key": "TestName"}`,
 			inputTK: entity.TextKey{
 				Text: "username",
-				Key: "TestName",
+				Key:  "TestName",
 			},
 			mockBehavior: func(r *mocks.MockUseCase, tk entity.TextKey) {
 				r.EXPECT().Sign(context.Background(), &tk).Return("", errors.New("something went wrong"))
@@ -82,7 +81,7 @@ func TestHandler_SignHMAC(t *testing.T) {
 
 			// Create Request
 			w := httptest.NewRecorder()
-			req:= httptest.NewRequest("POST", signPath,
+			req := httptest.NewRequest("POST", signPath,
 				bytes.NewBufferString(test.inputBody))
 
 			// Make Request
@@ -95,6 +94,6 @@ func TestHandler_SignHMAC(t *testing.T) {
 	}
 }
 
-func NewHandler(usecase *mocks.MockUseCase) {
-	panic("unimplemented")
-}
+// func NewHandler(usecase *mocks.MockUseCase) {
+// 	panic("unimplemented")
+// }

@@ -22,8 +22,8 @@ services:
     image: redis:alpine3.18
     container_name: redisdb
     hostname: redisdb_host
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"
     networks:
       - urserv-network
 
@@ -36,8 +36,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PW}
       - POSTGRES_DB=${POSTGRES_DB} #optional (specify default database instead of $POSTGRES_DB)
       - PGHOST=${PGHOST:-db}
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
     restart: always
     networks:
       - urserv-network

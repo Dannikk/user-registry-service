@@ -3,11 +3,11 @@ package app
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"user_registry/internal/config"
 	"github.com/cenkalti/backoff/v4"
 	_ "github.com/lib/pq"
 	"github.com/redis/go-redis/v9"
+	"log"
+	"user_registry/internal/config"
 )
 
 func newRedisClient(cfg config.RedisCfg) *redis.Client {
@@ -38,7 +38,7 @@ func newPostgresqlConnection(cfg config.PostgresCfg) (*sql.DB, error) {
 	var attemptnum int
 	// check the connection
 	err = backoff.Retry(
-		func () error {
+		func() error {
 			err := db.Ping()
 			attemptnum += 1
 			log.Printf("Failed to ping db. Attempt=%v: %v\n", attemptnum, err)

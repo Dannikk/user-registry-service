@@ -9,16 +9,13 @@ import (
 	"user_registry/internal/usecase"
 )
 
-type Service struct {}
-
+type Service struct{}
 
 var _ usecase.Signer = &Service{}
-
 
 func New() *Service {
 	return &Service{}
 }
-
 
 func (s *Service) GetSign(ctx context.Context, tk *entity.TextKey) (string, error) {
 	hasher := hmac.New(sha512.New, []byte(tk.Key))

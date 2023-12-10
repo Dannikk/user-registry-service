@@ -17,7 +17,7 @@ type PostgresCfg struct {
 	POSTGRES_USER string
 	POSTGRES_PW   string
 	POSTGRES_DB   string
-	PGHOST string
+	PGHOST        string
 }
 
 type PGAdminCfg struct {
@@ -63,7 +63,7 @@ func NewConfig(path string) (*Config, error) {
 		POSTGRES_USER: viper.GetString("POSTGRES_USER"),
 		POSTGRES_PW:   viper.GetString("POSTGRES_PW"),
 		POSTGRES_DB:   viper.GetString("POSTGRES_DB"),
-		PGHOST:			pghost,
+		PGHOST:        pghost,
 	}
 
 	c.PGAdmin = PGAdminCfg{

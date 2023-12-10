@@ -1,8 +1,8 @@
 package entity
 
 type TextKey struct {
-	Text 	string `json:"text" binding:"required"`
-	Key     string `json:"key" binding:"required"`
+	Text string `json:"text" binding:"required"`
+	Key  string `json:"key" binding:"required"`
 }
 
 type KeyValue struct {
