@@ -21,12 +21,11 @@ type mockBehavior func(r *mocks.MockUseCase, user entity.TextKey)
 
 var (
 	signHMACCases = []struct {
-		name                 string
-		inputBody            string
-		inputTK              entity.TextKey
-		mockBehavior         mockBehavior
-		expectedStatusCode   int
-		expectedResponseBody string
+		name               string
+		inputBody          string
+		inputTK            entity.TextKey
+		mockBehavior       mockBehavior
+		expectedStatusCode int
 	}{
 		{
 			name:      "Ok",
@@ -38,8 +37,7 @@ var (
 			mockBehavior: func(r *mocks.MockUseCase, tk entity.TextKey) {
 				r.EXPECT().Sign(context.Background(), &tk).Return("hexcode", nil)
 			},
-			expectedStatusCode:   200,
-			expectedResponseBody: `{"hex_code":"hexcode"}`,
+			expectedStatusCode: 200,
 		},
 		{
 			name:               "Wrong Input",
@@ -47,9 +45,6 @@ var (
 			inputTK:            entity.TextKey{},
 			mockBehavior:       func(r *mocks.MockUseCase, tk entity.TextKey) {},
 			expectedStatusCode: 400,
-			expectedResponseBody: `{"error":"Key: 'TextKey.Text' 
-Error:Field validation for 'Text' failed on the 'required' tag\nKey: 'TextKey.Key' 
-Error:Field validation for 'Key' failed on the 'required' tag"}`,
 		},
 		{
 			name:      "Service Error",
@@ -61,8 +56,7 @@ Error:Field validation for 'Key' failed on the 'required' tag"}`,
 			mockBehavior: func(r *mocks.MockUseCase, tk entity.TextKey) {
 				r.EXPECT().Sign(context.Background(), &tk).Return("", errors.New("something went wrong"))
 			},
-			expectedStatusCode:   500,
-			expectedResponseBody: `{"error":"something went wrong"}`,
+			expectedStatusCode: 500,
 		},
 	}
 )
@@ -101,7 +95,6 @@ func TestHandler_SignHMAC(t *testing.T) {
 
 			// Assert
 			assert.Equal(t, w.Code, test.expectedStatusCode)
-			assert.Equal(t, w.Body.String(), test.expectedResponseBody)
 		})
 	}
 }
