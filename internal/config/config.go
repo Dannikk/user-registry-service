@@ -46,12 +46,12 @@ func NewConfig(path string) (*Config, error) {
 		redisHost = types.LOCALHOST
 	}
 
-	viper.SetDefault("Redis_Addres", fmt.Sprintf("%s:6379", redisHost))
+	viper.SetDefault("Redis_Address", fmt.Sprintf("%s:6379", redisHost))
 	viper.SetDefault("Redis_PW", "") // no password set
 	viper.SetDefault("Redis_DB", 0)  // use default DB
 
 	c.Redis = RedisCfg{
-		Address:  viper.GetString("Redis_Addres"),
+		Address:  viper.GetString("Redis_Address"),
 		Password: viper.GetString("Redis_PW"),
 		DB:       viper.GetInt("Redis_DB"),
 	}

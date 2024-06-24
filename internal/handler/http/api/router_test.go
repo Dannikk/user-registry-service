@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -16,15 +17,10 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func TestHandler_SignHMAC(t *testing.T) {
-	t.Parallel()
+type mockBehavior func(r *mocks.MockUseCase, user entity.TextKey)
 
-	// Init Test Table
-	type mockBehavior func(r *mocks.MockUseCase, user entity.TextKey)
-
-	signPath := "/sign/hmacsha512"
-
-	tests := []struct {
+var (
+	signHMACCases = []struct {
 		name                 string
 		inputBody            string
 		inputTK              entity.TextKey
@@ -69,8 +65,14 @@ Error:Field validation for 'Key' failed on the 'required' tag"}`,
 			expectedResponseBody: `{"error":"something went wrong"}`,
 		},
 	}
+)
 
-	for _, test := range tests {
+func TestHandler_SignHMAC(t *testing.T) {
+	t.Parallel()
+
+	signPath := "/sign/hmacsha512"
+
+	for _, test := range signHMACCases {
 		test := test
 
 		t.Run(test.name, func(t *testing.T) {
@@ -91,7 +93,7 @@ Error:Field validation for 'Key' failed on the 'required' tag"}`,
 
 			// Create Request
 			w := httptest.NewRecorder()
-			req := httptest.NewRequest("POST", signPath,
+			req := httptest.NewRequest(http.MethodPost, signPath,
 				bytes.NewBufferString(test.inputBody))
 
 			// Make Request
