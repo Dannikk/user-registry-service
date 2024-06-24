@@ -44,6 +44,7 @@ func newPostgresqlConnection(cfg config.PostgresCfg) (*sql.DB, error) {
 			err := db.Ping()
 			attemptnum++
 			log.Printf("Failed to ping db. Attempt=%v: %v\n", attemptnum, err)
+
 			return err
 		},
 		backoff.NewExponentialBackOff(),

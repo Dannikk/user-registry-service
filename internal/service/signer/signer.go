@@ -23,6 +23,7 @@ func (s *Service) GetSign(_ context.Context, tk *entity.TextKey) (string, error)
 	if _, err := hasher.Write([]byte(tk.Text)); err != nil {
 		return "", err
 	}
+
 	summa := hasher.Sum(nil)
 	hexstring := hex.EncodeToString(summa)
 

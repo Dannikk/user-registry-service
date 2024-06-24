@@ -60,6 +60,7 @@ func NewConfig(path string) (*Config, error) {
 	if !ok {
 		pghost = "localhost"
 	}
+
 	c.Pgsql = PostgresCfg{
 		Username: viper.GetString("POSTGRES_USER"),
 		Password: viper.GetString("POSTGRES_PW"),

@@ -14,14 +14,14 @@ func (h *Handler) AddRoutes(eng *gin.Engine) {
 	eng.POST("/redis/incr", h.IncrementRedis)
 }
 
-func (h Handler) Ping(c *gin.Context) {
+func (h *Handler) Ping(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
-func (h Handler) SignHMAC(c *gin.Context) {
+func (h *Handler) SignHMAC(c *gin.Context) {
 	var ctx = c.Request.Context()
-	textKey := &entity.TextKey{}
 
+	textKey := &entity.TextKey{}
 	if err := c.BindJSON(textKey); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -35,10 +35,10 @@ func (h Handler) SignHMAC(c *gin.Context) {
 	}
 }
 
-func (h Handler) CreateUser(c *gin.Context) {
+func (h *Handler) CreateUser(c *gin.Context) {
 	var ctx = c.Request.Context()
-	user := &entity.User{}
 
+	user := &entity.User{}
 	if err := c.BindJSON(user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -52,8 +52,9 @@ func (h Handler) CreateUser(c *gin.Context) {
 	}
 }
 
-func (h Handler) IncrementRedis(c *gin.Context) {
+func (h *Handler) IncrementRedis(c *gin.Context) {
 	var ctx = c.Request.Context()
+
 	keyValue := &entity.KeyValue{}
 
 	if err := c.BindJSON(keyValue); err != nil {

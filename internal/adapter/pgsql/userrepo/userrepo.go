@@ -22,6 +22,7 @@ func New(pgsqlConnect *sql.DB) *Repository {
 
 func (repo *Repository) CreateUser(_ context.Context, user *entity.User) (int64, error) {
 	sqlStatement := `INSERT INTO userstor (name, age) VALUES ($1, $2) RETURNING id`
+
 	var id int64
 
 	err := repo.pgsql.QueryRow(sqlStatement, user.Name, user.Age).Scan(&id)

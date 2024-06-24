@@ -24,7 +24,7 @@ linters:
     - goconst
     - gocritic
     - goimports
-    - gomnd
+    - mnd
     - lll
     - makezero
     - nakedret
@@ -94,10 +94,6 @@ linters-settings:
   nolintlint:
     require-explanation: true
     require-specific: true
-  wsl:
-    allow-cuddle-declarations: true
-    force-err-cuddling: true
-    allow-assign-and-anything: true
   gocognit:
     min-complexity: 160
 
