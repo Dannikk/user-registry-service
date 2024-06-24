@@ -1,6 +1,6 @@
 module user_registry
 
-go 1.20
+go 1.22
 
 require (
 	github.com/cenkalti/backoff/v4 v4.3.0
