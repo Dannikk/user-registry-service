@@ -1,4 +1,4 @@
-package user_reg
+package userregistry
 
 import (
 	"context"

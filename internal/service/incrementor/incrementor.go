@@ -24,10 +24,11 @@ func New(repo KeyValueRepo) *Service {
 }
 
 func (s *Service) Increment(ctx context.Context, kv *entity.KeyValue) (int64, error) {
-	if val, err := s.repo.UpdateKeyValue(ctx, kv.Key, kv.Value); err != nil {
+	val, err := s.repo.UpdateKeyValue(ctx, kv.Key, kv.Value)
+	if err != nil {
 		log.Printf("Failed to increment: %v", err)
 		return 0, err
-	} else {
-		return val, nil
 	}
+
+	return val, nil
 }

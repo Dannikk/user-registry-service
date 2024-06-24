@@ -4,17 +4,21 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"github.com/go-playground/assert/v2"
-	"go.uber.org/mock/gomock"
 	"net/http/httptest"
 	"testing"
+
 	"user_registry/internal/entity"
 	"user_registry/internal/handler/http/api"
 	mocks "user_registry/internal/handler/http/api/mocks"
+
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/assert/v2"
+	"go.uber.org/mock/gomock"
 )
 
 func TestHandler_SignHMAC(t *testing.T) {
+	t.Parallel()
+
 	// Init Test Table
 	type mockBehavior func(r *mocks.MockUseCase, user entity.TextKey)
 
@@ -42,12 +46,14 @@ func TestHandler_SignHMAC(t *testing.T) {
 			expectedResponseBody: `{"hex_code":"hexcode"}`,
 		},
 		{
-			name:                 "Wrong Input",
-			inputBody:            `{"username": "username"}`,
-			inputTK:              entity.TextKey{},
-			mockBehavior:         func(r *mocks.MockUseCase, tk entity.TextKey) {},
-			expectedStatusCode:   400,
-			expectedResponseBody: `{"error":"Key: 'TextKey.Text' Error:Field validation for 'Text' failed on the 'required' tag\nKey: 'TextKey.Key' Error:Field validation for 'Key' failed on the 'required' tag"}`,
+			name:               "Wrong Input",
+			inputBody:          `{"username": "username"}`,
+			inputTK:            entity.TextKey{},
+			mockBehavior:       func(r *mocks.MockUseCase, tk entity.TextKey) {},
+			expectedStatusCode: 400,
+			expectedResponseBody: `{"error":"Key: 'TextKey.Text' 
+Error:Field validation for 'Text' failed on the 'required' tag\nKey: 'TextKey.Key' 
+Error:Field validation for 'Key' failed on the 'required' tag"}`,
 		},
 		{
 			name:      "Service Error",
@@ -65,7 +71,11 @@ func TestHandler_SignHMAC(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		test := test
+
 		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+
 			// Init Dependencies
 			c := gomock.NewController(t)
 			defer c.Finish()

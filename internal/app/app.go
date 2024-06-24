@@ -2,10 +2,11 @@ package app
 
 import (
 	"log"
+
+	"user_registry/internal/config"
 	"user_registry/internal/handler/http/api"
 
 	"github.com/gin-gonic/gin"
-	"user_registry/internal/config"
 )
 
 type App struct {
@@ -16,15 +17,14 @@ type App struct {
 
 func NewApp(cfgPath string) (*App, error) {
 	cfg, err := config.NewConfig(cfgPath)
-
 	if err != nil {
 		log.Printf("config reading error: %v\n", err)
 		return nil, err
 	}
 
 	redisClient := newRedisClient(cfg.Redis)
-	pgsqlConn, err := newPostgresqlConnection(cfg.Pgsql)
 
+	pgsqlConn, err := newPostgresqlConnection(cfg.Pgsql)
 	if err != nil {
 		log.Printf("pgsql connection error: %v\n", err)
 		return nil, err

@@ -28,7 +28,6 @@ func (h Handler) SignHMAC(c *gin.Context) {
 	}
 
 	res, err := h.uc.Sign(ctx, textKey)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {
@@ -46,7 +45,6 @@ func (h Handler) CreateUser(c *gin.Context) {
 	}
 
 	res, err := h.uc.CreateUser(ctx, user)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {
@@ -56,15 +54,14 @@ func (h Handler) CreateUser(c *gin.Context) {
 
 func (h Handler) IncrementRedis(c *gin.Context) {
 	var ctx = c.Request.Context()
-	key_value := &entity.KeyValue{}
+	keyValue := &entity.KeyValue{}
 
-	if err := c.BindJSON(key_value); err != nil {
+	if err := c.BindJSON(keyValue); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	res, err := h.uc.Increment(ctx, key_value)
-
+	res, err := h.uc.Increment(ctx, keyValue)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {

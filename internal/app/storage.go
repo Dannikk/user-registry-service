@@ -3,33 +3,35 @@ package app
 import (
 	"database/sql"
 	"fmt"
-	"github.com/cenkalti/backoff/v4"
-	_ "github.com/lib/pq"
-	"github.com/redis/go-redis/v9"
 	"log"
+
 	"user_registry/internal/config"
+
+	"github.com/cenkalti/backoff/v4"
+	_ "github.com/lib/pq" // postgres
+	"github.com/redis/go-redis/v9"
 )
 
 func newRedisClient(cfg config.RedisCfg) *redis.Client {
 	client := redis.NewClient(&redis.Options{
-		Addr:     cfg.Addres,
+		Addr:     cfg.Address,
 		Password: cfg.Password, // no password set
 		DB:       cfg.DB,       // use default DB
 	})
+
 	return client
 }
 
 func newPostgresqlConnection(cfg config.PostgresCfg) (*sql.DB, error) {
 	pgConnString := fmt.Sprintf("host=%s dbname=%s user=%s password=%s sslmode=disable",
-		cfg.PGHOST,
-		cfg.POSTGRES_DB,
-		cfg.POSTGRES_USER,
-		cfg.POSTGRES_PW,
+		cfg.Host,
+		cfg.DB,
+		cfg.Username,
+		cfg.Password,
 	)
 
 	// Open the connection
 	db, err := sql.Open("postgres", pgConnString)
-
 	if err != nil {
 		log.Printf("error opening connection: %v\n", err)
 		return nil, err
@@ -40,7 +42,7 @@ func newPostgresqlConnection(cfg config.PostgresCfg) (*sql.DB, error) {
 	err = backoff.Retry(
 		func() error {
 			err := db.Ping()
-			attemptnum += 1
+			attemptnum++
 			log.Printf("Failed to ping db. Attempt=%v: %v\n", attemptnum, err)
 			return err
 		},
@@ -56,7 +58,7 @@ func newPostgresqlConnection(cfg config.PostgresCfg) (*sql.DB, error) {
 func initDB(db *sql.DB) error {
 	if _, err := db.Exec(
 		"CREATE TABLE IF NOT EXISTS userstor (id SERIAL PRIMARY KEY, name VARCHAR, age INT)"); err != nil {
-		return fmt.Errorf("creating table is failed! %v", err)
+		return fmt.Errorf("creating table is failed! %w", err)
 	}
 
 	return nil
@@ -68,9 +70,12 @@ func CloseConnection(db *sql.DB) error {
 	}
 
 	log.Println("Closing connection...")
+
 	if err := db.Close(); err != nil {
 		return err
 	}
+
 	log.Println("Connection closed!")
+
 	return nil
 }

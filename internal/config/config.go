@@ -3,26 +3,27 @@ package config
 import (
 	"fmt"
 	"os"
+	"user_registry/pkg/types"
 
 	"github.com/spf13/viper"
 )
 
 type RedisCfg struct {
-	Addres   string
+	Address  string
 	Password string
 	DB       int
 }
 
 type PostgresCfg struct {
-	POSTGRES_USER string
-	POSTGRES_PW   string
-	POSTGRES_DB   string
-	PGHOST        string
+	Username string
+	Password string
+	DB       string
+	Host     string
 }
 
 type PGAdminCfg struct {
-	PGADMIN_MAIL string
-	PGADMIN_PW   string
+	Mail     string
+	Password string
 }
 
 type Config struct {
@@ -40,17 +41,17 @@ func NewConfig(path string) (*Config, error) {
 		return c, err
 	}
 
-	redis_host, ok := os.LookupEnv("REDISHOST")
+	redisHost, ok := os.LookupEnv("REDISHOST")
 	if !ok {
-		redis_host = "localhost"
+		redisHost = types.LOCALHOST
 	}
 
-	viper.SetDefault("Redis_Addres", fmt.Sprintf("%s:6379", redis_host))
+	viper.SetDefault("Redis_Addres", fmt.Sprintf("%s:6379", redisHost))
 	viper.SetDefault("Redis_PW", "") // no password set
 	viper.SetDefault("Redis_DB", 0)  // use default DB
 
 	c.Redis = RedisCfg{
-		Addres:   viper.GetString("Redis_Addres"),
+		Address:  viper.GetString("Redis_Addres"),
 		Password: viper.GetString("Redis_PW"),
 		DB:       viper.GetInt("Redis_DB"),
 	}
@@ -60,15 +61,15 @@ func NewConfig(path string) (*Config, error) {
 		pghost = "localhost"
 	}
 	c.Pgsql = PostgresCfg{
-		POSTGRES_USER: viper.GetString("POSTGRES_USER"),
-		POSTGRES_PW:   viper.GetString("POSTGRES_PW"),
-		POSTGRES_DB:   viper.GetString("POSTGRES_DB"),
-		PGHOST:        pghost,
+		Username: viper.GetString("POSTGRES_USER"),
+		Password: viper.GetString("POSTGRES_PW"),
+		DB:       viper.GetString("POSTGRES_DB"),
+		Host:     pghost,
 	}
 
 	c.PGAdmin = PGAdminCfg{
-		PGADMIN_PW:   viper.GetString("PGADMIN_PW"),
-		PGADMIN_MAIL: viper.GetString("PGADMIN_MAIL"),
+		Password: viper.GetString("PGADMIN_PW"),
+		Mail:     viper.GetString("PGADMIN_MAIL"),
 	}
 
 	return c, nil

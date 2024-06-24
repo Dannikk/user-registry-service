@@ -1,4 +1,4 @@
-package sign_service
+package signservice
 
 import (
 	"context"
@@ -17,7 +17,7 @@ func New() *Service {
 	return &Service{}
 }
 
-func (s *Service) GetSign(ctx context.Context, tk *entity.TextKey) (string, error) {
+func (s *Service) GetSign(_ context.Context, tk *entity.TextKey) (string, error) {
 	hasher := hmac.New(sha512.New, []byte(tk.Key))
 
 	if _, err := hasher.Write([]byte(tk.Text)); err != nil {

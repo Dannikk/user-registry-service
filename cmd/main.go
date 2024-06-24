@@ -17,7 +17,6 @@ func main() {
 	}()
 
 	app, err := app.NewApp(".env")
-
 	if err != nil {
 		log.Panicf("Error: %v\n", err)
 	}
@@ -27,6 +26,7 @@ func main() {
 	}()
 
 	quit := make(chan os.Signal, 1)
+	// var quit chan os.Signal
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	sig := <-quit
 	log.Printf("%v was called. Shutdown the app", sig)
