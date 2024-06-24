@@ -43,7 +43,7 @@ var (
 			name:               "Wrong Input",
 			inputBody:          `{"username": "username"}`,
 			inputTK:            entity.TextKey{},
-			mockBehavior:       func(r *mocks.MockUseCase, tk entity.TextKey) {},
+			mockBehavior:       func(_ *mocks.MockUseCase, _ entity.TextKey) {},
 			expectedStatusCode: 400,
 		},
 		{
