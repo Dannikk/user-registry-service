@@ -24,7 +24,6 @@ linters:
     - goconst
     - gocritic
     - goimports
-    - mnd
     - lll
     - makezero
     - nakedret

@@ -2,17 +2,17 @@ package app
 
 import (
 	"log"
+	"user_registry/config"
 
-	"user_registry/internal/config"
 	"user_registry/internal/handler/http/api"
 
 	"github.com/gin-gonic/gin"
 )
 
 type App struct {
-	cfg    *config.Config
-	c      *Container
-	logger *log.Logger
+	cfg       *config.Config
+	container *Container
+	logger    *log.Logger
 }
 
 func NewApp(cfgPath string) (*App, error) {
@@ -30,14 +30,9 @@ func NewApp(cfgPath string) (*App, error) {
 		return nil, err
 	}
 
-	if err := initDB(pgsqlConn); err != nil {
-		log.Printf("initDB error: %v\n", err)
-		return nil, err
-	}
-
 	app := &App{
-		cfg: cfg,
-		c:   NewContainer(redisClient, pgsqlConn),
+		cfg:       cfg,
+		container: NewContainer(redisClient, pgsqlConn),
 	}
 
 	return app, nil
@@ -46,7 +41,7 @@ func NewApp(cfgPath string) (*App, error) {
 func (app *App) StartHTTPServer() (err error) {
 	gengine := gin.Default()
 
-	handler := api.NewHandler(app.c.GetUseCase())
+	handler := api.NewHandler(app.container.GetUseCase())
 
 	handler.AddRoutes(gengine)
 
@@ -54,4 +49,8 @@ func (app *App) StartHTTPServer() (err error) {
 	app.logger.Println(err)
 
 	return
+}
+
+func (app *App) Shutdown() (err error) {
+	return app.container.Shutdown()
 }

@@ -2,6 +2,7 @@ package app
 
 import (
 	"database/sql"
+	"errors"
 
 	"user_registry/internal/adapter/pgsql/userrepo"
 	"user_registry/internal/adapter/redis/storage"
@@ -43,4 +44,12 @@ func (c *Container) getUserRegistry() *userregistry.Service {
 
 func (c *Container) getIncrementor() *incrementor.Service {
 	return incrementor.New(storage.New(c.redis))
+}
+
+func (c *Container) Shutdown() error {
+	var err error
+	err = errors.Join(err, c.pgsql.Close())
+	err = errors.Join(err, c.redis.Close())
+
+	return err
 }

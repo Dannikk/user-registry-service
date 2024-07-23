@@ -12,7 +12,7 @@ func main() {
 	defer func() {
 		e := recover()
 		if e != nil {
-			log.Println("Oh oh oh, ERROR:", e)
+			log.Println("Recovered error:", e)
 		}
 	}()
 
@@ -26,8 +26,15 @@ func main() {
 	}()
 
 	quit := make(chan os.Signal, 1)
-	// var quit chan os.Signal
+
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 	sig := <-quit
 	log.Printf("%v was called. Shutdown the app", sig)
+
+	err = app.Shutdown()
+	if err != nil {
+		log.Printf("shutdown error: %v\n", err)
+	} else {
+		log.Println("shutdown success")
+	}
 }

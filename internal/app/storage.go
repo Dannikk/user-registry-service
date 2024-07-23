@@ -4,8 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-
-	"user_registry/internal/config"
+	"user_registry/config"
 
 	"github.com/cenkalti/backoff/v4"
 	_ "github.com/lib/pq" // postgres
@@ -15,8 +14,8 @@ import (
 func newRedisClient(cfg config.RedisCfg) *redis.Client {
 	client := redis.NewClient(&redis.Options{
 		Addr:     cfg.Address,
-		Password: cfg.Password, // no password set
-		DB:       cfg.DB,       // use default DB
+		Password: cfg.Password,
+		DB:       cfg.DB,
 	})
 
 	return client
@@ -37,13 +36,13 @@ func newPostgresqlConnection(cfg config.PostgresCfg) (*sql.DB, error) {
 		return nil, err
 	}
 
-	var attemptnum int
+	var attemptNum int
 	// check the connection
 	err = backoff.Retry(
 		func() error {
 			err := db.Ping()
-			attemptnum++
-			log.Printf("Failed to ping db. Attempt=%v: %v\n", attemptnum, err)
+			attemptNum++
+			log.Printf("Failed to ping db. Attempt=%v: %v\n", attemptNum, err)
 
 			return err
 		},
@@ -54,29 +53,4 @@ func newPostgresqlConnection(cfg config.PostgresCfg) (*sql.DB, error) {
 	}
 
 	return db, nil
-}
-
-func initDB(db *sql.DB) error {
-	if _, err := db.Exec(
-		"CREATE TABLE IF NOT EXISTS userstor (id SERIAL PRIMARY KEY, name VARCHAR, age INT)"); err != nil {
-		return fmt.Errorf("creating table is failed! %w", err)
-	}
-
-	return nil
-}
-
-func CloseConnection(db *sql.DB) error {
-	if db == nil {
-		return fmt.Errorf("db pointer is nil")
-	}
-
-	log.Println("Closing connection...")
-
-	if err := db.Close(); err != nil {
-		return err
-	}
-
-	log.Println("Connection closed!")
-
-	return nil
 }
